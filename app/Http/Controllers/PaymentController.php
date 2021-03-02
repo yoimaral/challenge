@@ -6,24 +6,26 @@ use App\Http\Requests\SavePaymentRequest;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\PaymentMethods\PaymentMethodFactory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('payments.index', [
             'payments' => Payment::with('paymentMethod')->latest()->get(),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('payments.create', [
             'paymentMethods' => PaymentMethod::all()
         ]);
     }
 
-    public function store(SavePaymentRequest $request)
+    public function store(SavePaymentRequest $request): RedirectResponse
     {
         $payment = Payment::create($request->validated());
         $paymentMethod = PaymentMethodFactory::create((int)$request->payment_method_id);
@@ -61,5 +63,16 @@ class PaymentController extends Controller
             $payment->status = $currentPaymentStatus;
             $payment->save();
         }
+    }
+
+    public function retry(Payment $payment): RedirectResponse
+    {
+        $paymentMethod = PaymentMethodFactory::create((int)$payment->payment_method_id);
+        dd($paymentMethod);
+        if ($payment->status === Payment::STATUSES['IN PROCESS']) {
+            return $paymentMethod->retryPayment($payment);
+        }
+
+        return $paymentMethod->createPayment($payment);
     }
 }

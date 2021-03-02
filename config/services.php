@@ -31,7 +31,10 @@ return [
     ],
 
     'placetopay' => [
-        'endpoint_base' => env('PLACETOPAY_ENDPOINT_BASE'),
+        'endpoint_base' => [
+            'webcheckout' => env('PLACETOPAY_ENDPOINT_BASE_WEBCHECKOUT'),
+            'pse' => env('PLACETOPAY_ENDPOINT_BASE_PSE'),
+        ],
         'login' => env('PLACETOPAY_LOGIN'),
         'secret_key' => env('PLACETOPAY_SECRET_KEY'),
     ],

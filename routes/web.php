@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PaymentController::class, 'create']);
 
 Route::resource('payments', PaymentController::class);
+Route::put('payments/retry/{payment}', [PaymentController::class, 'retry'])->name('payments.retry');
+
+
+Route::resource('paymentsPse', PaymentPseController::class);

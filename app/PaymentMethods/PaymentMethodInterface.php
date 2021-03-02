@@ -11,7 +11,5 @@ interface PaymentMethodInterface
 
     public function retryPayment(Payment $payment): RedirectResponse;
 
-    public function getPaymentInformation(string $reference): array;
-
     public function status(string $reference): string;
 }

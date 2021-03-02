@@ -14,6 +14,8 @@ class PaymentMethodFactory
         switch ($paymentMethodId) {
             case self::WEBCHECKOUT:
                 return new Webcheckout();
+            case self::PSE:
+                return new Pse();
             default:
                 throw ValidationException::withMessages(['La plataforma selecionada no está en la configuración']);
         }
