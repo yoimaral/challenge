@@ -70,7 +70,7 @@ Para la instalación debes clonar el repositorio en una carpeta preferiblemente 
 
 ## Versionado 📌
 
-Laravel 7.0
+Laravel 8.0
 
 
 ## Autores ✒️
