@@ -17,9 +17,11 @@ class PaymentMethodSeeder extends Seeder
         PaymentMethod::truncate();
         PaymentMethod::create([
             'name' => 'Webcheckout',
+            'image' => 'img/payment_methods/webcheckout.png',
         ]);
         PaymentMethod::create([
             'name' => 'PSE',
+            'image' => 'img/payment_methods/pse.png',
         ]);
     }
 }

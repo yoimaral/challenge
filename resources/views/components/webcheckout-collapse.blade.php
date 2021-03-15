@@ -1,0 +1,1 @@
+<label for="inputState">Has seleccionado Webcheckout como medio de pago</label>

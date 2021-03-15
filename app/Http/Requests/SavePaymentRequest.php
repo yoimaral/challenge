@@ -23,10 +23,17 @@ class SavePaymentRequest extends FormRequest
      */
     public function rules()
     {
+        $isPSE = false;
+        if (request()->get('payment_method_id') === '2') {
+            $isPSE = true;
+        }
         return [
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
-            'amount' => ['required', 'numeric', 'min:5000', 'max:100000'],
+            'amount' => ['required', 'numeric', 'min:5000', 'max:1000000'],
             'description' => ['required', 'min:5', 'max:1000'],
+            'bank_code' => [
+                $isPSE ? 'gt:0' : 'nullable',
+            ],
         ];
     }
 }

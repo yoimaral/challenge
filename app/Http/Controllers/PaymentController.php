@@ -8,9 +8,19 @@ use App\Models\PaymentMethod;
 use App\PaymentMethods\PaymentMethodFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use PlacetoPay\PSE\PSE as WcPse;
 
 class PaymentController extends Controller
 {
+    private $login;
+    private $secretKey;
+
+    public function __construct()
+    {
+        $this->login = config('services.placetopay.login');
+        $this->secretKey = config('services.placetopay.secret_key');
+    }
+
     public function index(): View
     {
         return view('payments.index', [
@@ -20,8 +30,12 @@ class PaymentController extends Controller
 
     public function create(): View
     {
+        $pse = new WcPse($this->login, $this->secretKey);
+        $bankList = $pse->getBankList()->toArray(); // Chachear
+
         return view('payments.create', [
-            'paymentMethods' => PaymentMethod::all()
+            'paymentMethods' => PaymentMethod::all(),
+            'bankList' => $bankList,
         ]);
     }
 
@@ -49,7 +63,7 @@ class PaymentController extends Controller
             || ($previousPaymentStatus === Payment::STATUSES['PENDING'])
         ) {
             $paymentMethod = PaymentMethodFactory::create($payment->payment_method_id);
-            $currentPaymentStatus = $paymentMethod->status($payment->reference);
+            $currentPaymentStatus = $paymentMethod->status((string)$payment->reference);
             $this->comparePaymentStatuses($payment, $previousPaymentStatus, $currentPaymentStatus);
         }
     }
@@ -68,7 +82,6 @@ class PaymentController extends Controller
     public function retry(Payment $payment): RedirectResponse
     {
         $paymentMethod = PaymentMethodFactory::create((int)$payment->payment_method_id);
-        dd($paymentMethod);
         if ($payment->status === Payment::STATUSES['IN PROCESS']) {
             return $paymentMethod->retryPayment($payment);
         }

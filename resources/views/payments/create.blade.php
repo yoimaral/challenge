@@ -8,37 +8,43 @@
     </div>
     <form action="{{route('payments.store')}}" method="POST">
         @csrf
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputState">Medio de pago</label>
-                <select class="custom-select @error('payment_method_id') is-invalid @enderror" name="payment_method_id">
-                    <option value="0">Por favor selecione el medio de pago</option>
-                    @foreach ($paymentMethods as $paymentMethod)
-                    <option value="{{$paymentMethod->id}}"
-                        {{old('payment_method_id') == $paymentMethod->id ? 'selected' : ''}}>
-                        {{$paymentMethod->name}}
-                    </option>
-                    @endforeach
-                </select>
-                @error('payment_method_id')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="form-group col-md-6">
-                <label for="inputNumber4">Monto a pagar</label>
-                <input name="amount" type="number" class="form-control @error('amount') is-invalid @enderror"
-                    id="inputNumber4" value="{{old('amount')}}">
-                @error('amount')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+        <div class="form-group">
+            <label for="inputNumber4">Monto a pagar</label>
+            <input name="amount" type="number" class="form-control @error('amount') is-invalid @enderror"
+                id="inputNumber4" value="{{old('amount')}}">
+            @error('amount')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
         <div class="form-group">
             <label for="exampleFormControlTextarea1"
-                class="form-label @error('description') is-invalid @enderror">Descripción del pago</label>
+                class="form-label @error('description') is-invalid @enderror">Descripción
+                del pago</label>
             <textarea name="description" class="form-control" id="exampleFormControlTextarea1"
                 rows="3">{{old('description', 'Pago de prueba')}}</textarea>
             @error('description')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-group">
+            <label for="inputState">Medio de pago</label>
+            <div class="form-group" id="toggler">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    @foreach ($paymentMethods as $paymentMethod)
+                    <label class="btn btn-outline-secondary rounded m-2 p-1"
+                        data-target="#{{ $paymentMethod->name }}Collapse" data-toggle="collapse">
+                        <input type="radio" name="payment_method_id" value="{{ $paymentMethod->id }}" required>
+                        <img style="width: 250px;" class="img-thumbnail h-100" src="{{ asset($paymentMethod->image) }}">
+                    </label>
+                    @endforeach
+                </div>
+                @foreach ($paymentMethods as $paymentMethod)
+                <div id="{{ $paymentMethod->name }}Collapse" class="collapse" data-parent="#toggler">
+                    @includeIf('components.' . strtolower($paymentMethod->name) . '-collapse')
+                </div>
+                @endforeach
+            </div>
+            @error('payment_method_id')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

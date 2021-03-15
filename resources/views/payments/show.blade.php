@@ -30,8 +30,7 @@
                 </p>
             </div>
             <div class="d-flex justify-content-center">
-                @if($payment->status !== \App\Models\Payment::STATUSES['APPROVED'] && $payment->status !==
-                \App\Models\Payment::STATUSES['PENDING'])
+                @if($payment->status === \App\Models\Payment::STATUSES['IN PROCESS'])
                 <form class="d-flex justify-content-center" action="{{route('payments.retry', $payment)}}"
                     method="POST">
                     @csrf
