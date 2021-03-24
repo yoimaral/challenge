@@ -9,6 +9,7 @@ use App\PaymentMethods\PaymentMethodFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use PlacetoPay\PSE\PSE as WcPse;
+use Psr\Cache\CacheItemPoolInterface;
 
 class PaymentController extends Controller
 {
@@ -28,10 +29,11 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(CacheItemPoolInterface $cacheAdapter): View
     {
         $pse = new WcPse($this->login, $this->secretKey);
-        $bankList = $pse->getBankList()->toArray(); // Chachear
+        $pse->setCacheAdapter($cacheAdapter);
+        $bankList = $pse->getBankList()->toArray();
 
         return view('payments.create', [
             'paymentMethods' => PaymentMethod::all(),

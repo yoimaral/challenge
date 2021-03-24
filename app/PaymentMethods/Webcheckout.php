@@ -52,6 +52,7 @@ class Webcheckout implements PaymentMethodInterface
         $description = $payment->description;
         $total = $payment->amount;
         $webcheckoutResponse = $this->createRequest($reference, $description, $total);
+
         $payment->reference = $webcheckoutResponse['requestId'];
         $payment->process_url = $webcheckoutResponse['processUrl'];
         $payment->save();

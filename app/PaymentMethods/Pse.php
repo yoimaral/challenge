@@ -9,7 +9,6 @@ use PlacetoPay\PSE\Struct\Bank;
 
 class Pse implements PaymentMethodInterface
 {
-    private $endpointBase;
     private $login;
     private $secretKey;
     private const PSE_APPROVED = 'OK';
